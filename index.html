@@ -1,0 +1,125 @@
+<meta charset=utf-8>
+<a href=//github.com/xem/miniLangtonLoops><img style="position:absolute;top:0;right:0;border:0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+<center>
+<font face=arial>
+<h1>cellularandom</h1>
+<br>
+A random cellular automaton generator, based on <a href=//xem.github.io/miniLangtonLoops>miniLangtonLoops</a>
+<br>
+<br>
+
+<canvas id=a width=500 height=500>
+
+<script>
+
+// map, canvas context
+c=a.getContext`2d`;
+m=[];
+
+// Initial state
+
+/*---------------------
+
+s = [
+  5 x 5 random numbers
+];
+
+---------------------*/
+
+s=[];
+for(i=0;i<5;i++){
+  s[i]="";
+  for(j=0;j<5;j++){
+    s[i]+= ~~(Math.random()*5);
+  }
+}
+
+
+// Rules
+
+/* ---------------------
+
+r = [
+  random > 50 * 6 random numbers
+];
+
+-----------------------*/
+z=145
+r=[];
+for(i=0,nb=~~(Math.random()*500)+100;i<nb;i++){
+  r[i]="";
+  for(j=0;j<6;j++){
+    r[i]+= ~~(Math.random()*5);
+  }
+}
+r=r.sort();
+
+// Loop
+setInterval(function(){
+  
+  // New map
+  n=[];
+    
+  // For each cell
+  for(i=1e5;i--;){
+    
+    x=i%350;
+    y=i/350|0;
+    
+    // 1st generation: draw initial state
+    // Next generations: reuse previous color (this saves 93 rules)
+    n[i]=m[i]||(s[y-z]?~~s[y-z][x-z]:0)
+
+    // Next generations:
+    // For better perfs, ignore cells with black neighbours (w = parseInt("" + N + E + S + W) > 0)
+    if(
+      !z
+      &&
+      (
+        w=+(
+          p=""
+          +~~m[i-350]
+          +~~m[i+1]
+          +~~m[i+350]
+          +~~m[i-1]
+        )
+      )
+    ){
+    
+      // for each rule, test if the current cell is equal to the first char of the rule,
+      // and if the 4 neighbour cells are present in any rotation of the chars 2 to 5 of the rule,
+      // then set the last char of the rule as the current cell's color
+      for(k of r)
+        k[0]==m[i]
+        &&
+        (p+p).includes(k.slice(1,5))
+        &&
+        (n[i]=k[5]);
+    }
+    
+    // 1st generation: draw all the cells
+    // Next generations: draw only the cells that have colored neighbours
+    if(z||w)
+      c.fillStyle="#"+"000FFF0F00".substr("01764532"[n[i]],3),
+      c.fillRect(2*x-50,2*y-50,2,2);
+  }
+    
+  m=n;
+  z=0;
+  
+},9);
+
+</script>
+
+
+</canvas>
+
+<br>
+<br>
+
+(The initial state is stored in the array s, the rules are stored in the array r)
+
+</br>
+</br>
+
+2016 - The Codegolf Team
